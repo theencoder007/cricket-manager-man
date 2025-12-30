@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricketing Manager v1.0</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app">
+        <section id="landing-screen" class="screen">
+            <h1 class="game-title">Cricketing Manager <span class="version">v1.0</span></h1>
+            <p class="welcome-note">Welcome, Coach! Step into the dugout and lead your team to glory. Your journey to the championship starts here.</p>
+            <div class="login-box">
+                <input type="text" id="login-username" placeholder="Enter Username to Login...">
+                <button onclick="login()">Login</button>
+            </div>
+        </section>
+
+        <section id="menu-screen" class="screen hidden">
+            <h1 class="game-title-small">Cricketing Manager</h1>
+            <div class="menu-container">
+                <button class="menu-btn" onclick="showNewGame()">New Game</button>
+                <button class="menu-btn" id="continue-btn" onclick="continueGame()">Continue</button>
+                <button class="menu-btn" onclick="showSettings()">Settings</button>
+                <button class="menu-btn exit-btn" onclick="logout()">Exit Game</button>
+            </div>
+        </section>
+
+        <section id="new-game-screen" class="screen hidden">
+            <h2>Start Your Career</h2>
+            <div class="setup-box">
+                <label>Manager Name:</label>
+                <input type="text" id="mgr-name" placeholder="Your Name">
+                
+                <label>Select Your IPL Team:</label>
+                <select id="team-select">
+                    <option value="CSK">Chennai Super Kings</option>
+                    <option value="MI">Mumbai Indians</option>
+                    <option value="RCB">Royal Challengers Bengaluru</option>
+                    <option value="KKR">Kolkata Knight Riders</option>
+                    <option value="RR">Rajasthan Royals</option>
+                    <option value="SRH">Sunrisers Hyderabad</option>
+                    <option value="DC">Delhi Capitals</option>
+                    <option value="PBKS">Punjab Kings</option>
+                    <option value="GT">Gujarat Titans</option>
+                    <option value="LSG">Lucknow Super Giants</option>
+                </select>
+                <button onclick="startNewGame()">Start Career</button>
+                <button class="back-btn" onclick="showScreen('menu-screen')">Back</button>
+            </div>
+        </section>
+
+        <section id="settings-screen" class="screen hidden">
+            <h2>Settings</h2>
+            <div class="setup-box">
+                <label>Edit Manager Name:</label>
+                <input type="text" id="edit-name">
+                <label>Change Team:</label>
+                <select id="edit-team">
+                    <option value="CSK">Chennai Super Kings</option>
+                    <option value="MI">Mumbai Indians</option>
+                    <option value="RCB">Royal Challengers Bengaluru</option>
+                    <option value="KKR">Kolkata Knight Riders</option>
+                    <option value="RR">Rajasthan Royals</option>
+                    <option value="SRH">Sunrisers Hyderabad</option>
+                    <option value="DC">Delhi Capitals</option>
+                    <option value="PBKS">Punjab Kings</option>
+                    <option value="GT">Gujarat Titans</option>
+                    <option value="LSG">Lucknow Super Giants</option>
+                </select>
+                <button onclick="saveSettings()">Save Changes</button>
+                <button class="back-btn" onclick="showScreen('menu-screen')">Back</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
