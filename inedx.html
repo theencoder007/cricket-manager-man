@@ -4,38 +4,129 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cricketing Manager v1.0</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS STYLES */
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --danger: #ef4444;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at top, #1e293b, #0f172a);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #app {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        .screen {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .hidden { display: none; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: var(--accent); }
+        .version { font-size: 0.9rem; color: var(--text-dim); }
+        .welcome-note { font-size: 1.1rem; color: var(--text-dim); margin-bottom: 30px; line-height: 1.5; }
+
+        .input-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--accent); }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .btn-stack { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+
+        button {
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        button:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+
+        .exit-btn { background: transparent; border: 2px solid var(--danger); color: var(--danger); }
+        .exit-btn:hover { background: var(--danger); color: white; }
+
+        .back-link { margin-top: 20px; display: block; color: var(--text-dim); cursor: pointer; text-decoration: underline; }
+    </style>
 </head>
 <body>
 
     <div id="app">
-        <section id="landing-screen" class="screen">
-            <h1 class="game-title">Cricketing Manager <span class="version">v1.0</span></h1>
-            <p class="welcome-note">Welcome, Coach! Step into the dugout and lead your team to glory. Your journey to the championship starts here.</p>
-            <div class="login-box">
-                <input type="text" id="login-username" placeholder="Enter Username to Login...">
-                <button onclick="login()">Login</button>
+        <section id="screen-login" class="screen">
+            <h1>Cricketing Manager <span class="version">v1.0</span></h1>
+            <p class="welcome-note">The ultimate cricket simulation. Build your squad, master the tactics, and conquer the league.</p>
+            <div class="input-group">
+                <input type="text" id="login-user" placeholder="Enter Username">
+            </div>
+            <button style="width: 100%;" onclick="handleLogin()">Login to Club</button>
+        </section>
+
+        <section id="screen-menu" class="screen hidden">
+            <h1 id="menu-title">Main Menu</h1>
+            <div class="btn-stack">
+                <button onclick="showScreen('screen-new-game')">New Game</button>
+                <button id="continue-btn" onclick="handleContinue()">Continue</button>
+                <button onclick="showSettings()">Settings</button>
+                <button class="exit-btn" onclick="handleLogout()">Exit Game</button>
             </div>
         </section>
 
-        <section id="menu-screen" class="screen hidden">
-            <h1 class="game-title-small">Cricketing Manager</h1>
-            <div class="menu-container">
-                <button class="menu-btn" onclick="showNewGame()">New Game</button>
-                <button class="menu-btn" id="continue-btn" onclick="continueGame()">Continue</button>
-                <button class="menu-btn" onclick="showSettings()">Settings</button>
-                <button class="menu-btn exit-btn" onclick="logout()">Exit Game</button>
+        <section id="screen-new-game" class="screen hidden">
+            <h2>Start New Career</h2>
+            <div class="input-group">
+                <label>Manager Name</label>
+                <input type="text" id="new-mgr-name" placeholder="E.g. Coach Smith">
             </div>
-        </section>
-
-        <section id="new-game-screen" class="screen hidden">
-            <h2>Start Your Career</h2>
-            <div class="setup-box">
-                <label>Manager Name:</label>
-                <input type="text" id="mgr-name" placeholder="Your Name">
-                
-                <label>Select Your IPL Team:</label>
-                <select id="team-select">
+            <div class="input-group">
+                <label>Choose IPL Team</label>
+                <select id="new-team-select">
                     <option value="CSK">Chennai Super Kings</option>
                     <option value="MI">Mumbai Indians</option>
                     <option value="RCB">Royal Challengers Bengaluru</option>
@@ -47,18 +138,20 @@
                     <option value="GT">Gujarat Titans</option>
                     <option value="LSG">Lucknow Super Giants</option>
                 </select>
-                <button onclick="startNewGame()">Start Career</button>
-                <button class="back-btn" onclick="showScreen('menu-screen')">Back</button>
             </div>
+            <button style="width: 100%;" onclick="createNewGame()">Create Profile</button>
+            <span class="back-link" onclick="showScreen('screen-menu')">Cancel</span>
         </section>
 
-        <section id="settings-screen" class="screen hidden">
+        <section id="screen-settings" class="screen hidden">
             <h2>Settings</h2>
-            <div class="setup-box">
-                <label>Edit Manager Name:</label>
-                <input type="text" id="edit-name">
-                <label>Change Team:</label>
-                <select id="edit-team">
+            <div class="input-group">
+                <label>Update Manager Name</label>
+                <input type="text" id="edit-mgr-name">
+            </div>
+            <div class="input-group">
+                <label>Transfer to Team</label>
+                <select id="edit-team-select">
                     <option value="CSK">Chennai Super Kings</option>
                     <option value="MI">Mumbai Indians</option>
                     <option value="RCB">Royal Challengers Bengaluru</option>
@@ -70,12 +163,116 @@
                     <option value="GT">Gujarat Titans</option>
                     <option value="LSG">Lucknow Super Giants</option>
                 </select>
-                <button onclick="saveSettings()">Save Changes</button>
-                <button class="back-btn" onclick="showScreen('menu-screen')">Back</button>
             </div>
+            <button style="width: 100%;" onclick="saveSettings()">Save Changes</button>
+            <span class="back-link" onclick="showScreen('screen-menu')">Back to Menu</span>
         </section>
     </div>
 
-    <script src="game.js"></script>
+    <script>
+        // JAVASCRIPT LOGIC
+        let currentUser = "";
+        let gameData = null;
+
+        // Utility to switch screens
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(screenId).classList.remove('hidden');
+            
+            // Special check for Continue button state
+            if(screenId === 'screen-menu') {
+                updateContinueButton();
+            }
+        }
+
+        // LOGIN: Load data from LocalStorage
+        function handleLogin() {
+            const user = document.getElementById('login-user').value.trim();
+            if(!user) { alert("Please enter a username!"); return; }
+            
+            currentUser = user;
+            const savedData = localStorage.getItem('cricket_mgr_' + currentUser);
+            
+            if(savedData) {
+                gameData = JSON.parse(savedData);
+            } else {
+                gameData = null;
+            }
+            
+            showScreen('screen-menu');
+        }
+
+        // NEW GAME: Set up profile
+        function createNewGame() {
+            const name = document.getElementById('new-mgr-name').value.trim();
+            const team = document.getElementById('new-team-select').value;
+            
+            if(!name) { alert("Please enter a Manager Name!"); return; }
+
+            gameData = {
+                managerName: name,
+                team: team,
+                level: 1,
+                createdDate: new Date().toLocaleDateString()
+            };
+
+            saveToStorage();
+            alert("Career Created Successfully!");
+            showScreen('screen-menu');
+        }
+
+        // CONTINUE: Check if game exists
+        function handleContinue() {
+            if(!gameData) {
+                alert("No save file found for this user. Please start a New Game.");
+            } else {
+                alert(`Welcome back Coach ${gameData.managerName}! Loading your ${gameData.team} career...`);
+                // Next step would be the actual game dashboard
+            }
+        }
+
+        // SETTINGS: Load existing values and save changes
+        function showSettings() {
+            if(!gameData) {
+                alert("Please start a game first to access settings.");
+                return;
+            }
+            document.getElementById('edit-mgr-name').value = gameData.managerName;
+            document.getElementById('edit-team-select').value = gameData.team;
+            showScreen('screen-settings');
+        }
+
+        function saveSettings() {
+            gameData.managerName = document.getElementById('edit-mgr-name').value;
+            gameData.team = document.getElementById('edit-team-select').value;
+            saveToStorage();
+            alert("Settings Updated!");
+            showScreen('screen-menu');
+        }
+
+        // EXIT: Clear session and return to login
+        function handleLogout() {
+            currentUser = "";
+            gameData = null;
+            document.getElementById('login-user').value = "";
+            showScreen('screen-login');
+        }
+
+        // STORAGE HELPERS
+        function saveToStorage() {
+            localStorage.setItem('cricket_mgr_' + currentUser, JSON.stringify(gameData));
+        }
+
+        function updateContinueButton() {
+            const btn = document.getElementById('continue-btn');
+            if(!gameData) {
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+            } else {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            }
+        }
+    </script>
 </body>
 </html>
