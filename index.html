@@ -37,17 +37,35 @@
             font-size: 3.5em;
             color: #0f2027;
             margin-bottom: 20px;
+            animation: fadeInDown 0.8s;
         }
 
         .welcome-screen .subtitle {
             font-size: 1.5em;
             color: #666;
             margin-bottom: 40px;
+            animation: fadeInUp 0.8s;
         }
 
         .cricket-icon {
             font-size: 5em;
             margin-bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
         .google-btn {
@@ -70,6 +88,11 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             transform: translateY(-2px);
             border-color: #4285f4;
+        }
+
+        .google-icon {
+            width: 24px;
+            height: 24px;
         }
 
         .setup-screen {
@@ -459,6 +482,17 @@
             margin-top: 10px;
         }
 
+        .budget-display {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -521,26 +555,38 @@
 </head>
 <body>
     <div class="container">
+        <!-- Welcome Screen -->
         <div id="welcomeScreen" class="welcome-screen">
             <div class="cricket-icon">🏏</div>
             <h1>Cricket Manager</h1>
-            <p class="subtitle">Build Your Dream Team!</p>
+            <p class="subtitle">Build Your Dream Team, Dominate the League!</p>
             
             <div class="features-list">
                 <h3>Game Features</h3>
                 <ul>
                     <li>Create and customize your team</li>
-                    <li>Buy and sell players</li>
+                    <li>Buy and sell players in transfer market</li>
                     <li>Train players to improve skills</li>
-                    <li>Multiple match formats</li>
-                    <li>Player injuries and form</li>
-                    <li>Detailed statistics</li>
+                    <li>Multiple match formats (T20, ODI, Test)</li>
+                    <li>Player injuries and form system</li>
+                    <li>Tournament knockout stages</li>
+                    <li>Detailed player statistics</li>
+                    <li>Auto-save progress</li>
                 </ul>
             </div>
 
-            <button class="google-btn" onclick="loginWithGoogle()">Sign in to Play</button>
+            <button class="google-btn" onclick="loginWithGoogle()">
+                <svg class="google-icon" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Sign in to Play
+            </button>
         </div>
 
+        <!-- Team Setup Screen -->
         <div id="setupScreen" class="setup-screen">
             <h2>Create Your Team</h2>
             <form onsubmit="completeSetup(event)">
@@ -551,12 +597,17 @@
                 
                 <div class="form-group">
                     <label>Choose Team Color</label>
-                    <div class="color-options" id="colorOptions">
+                    <div class="color-options">
                         <div class="color-option selected" style="background: #e74c3c;" data-color="#e74c3c"></div>
                         <div class="color-option" style="background: #3498db;" data-color="#3498db"></div>
                         <div class="color-option" style="background: #2ecc71;" data-color="#2ecc71"></div>
                         <div class="color-option" style="background: #f39c12;" data-color="#f39c12"></div>
                         <div class="color-option" style="background: #9b59b6;" data-color="#9b59b6"></div>
+                        <div class="color-option" style="background: #1abc9c;" data-color="#1abc9c"></div>
+                        <div class="color-option" style="background: #34495e;" data-color="#34495e"></div>
+                        <div class="color-option" style="background: #e67e22;" data-color="#e67e22"></div>
+                        <div class="color-option" style="background: #95a5a6;" data-color="#95a5a6"></div>
+                        <div class="color-option" style="background: #16a085;" data-color="#16a085"></div>
                     </div>
                 </div>
 
@@ -565,7 +616,7 @@
                     <select id="formatSelect">
                         <option value="t20">T20 (20 Overs)</option>
                         <option value="odi">ODI (50 Overs)</option>
-                        <option value="test">Test Match</option>
+                        <option value="test">Test (5 Days)</option>
                     </select>
                 </div>
 
@@ -573,6 +624,7 @@
             </form>
         </div>
 
+        <!-- Game Screen -->
         <div id="gameScreen" class="game-screen">
             <div class="user-info">
                 <div class="user-profile">
@@ -643,6 +695,7 @@
                             <th>Runs</th>
                             <th>Avg</th>
                             <th>Wickets</th>
+                            <th>Economy</th>
                         </tr>
                     </thead>
                     <tbody id="statsTable"></tbody>
@@ -651,7 +704,7 @@
 
             <div id="transfer" class="tab-content">
                 <h2>Transfer Market</h2>
-                <p style="margin-bottom: 20px;">Budget: $<span id="transferBudget">10.0</span>M</p>
+                <div class="budget-display">Available Budget: $<span id="transferBudget">10.0</span>M</div>
                 <div class="controls">
                     <button onclick="showMarket('buy')">Buy Players</button>
                     <button onclick="showMarket('sell')">Sell Players</button>
@@ -661,7 +714,7 @@
 
             <div id="training" class="tab-content">
                 <h2>Training Center</h2>
-                <p style="margin-bottom: 20px;">Select a player to train</p>
+                <p style="margin-bottom: 20px;">Select a player to train and improve their skills</p>
                 <table>
                     <thead>
                         <tr>
@@ -685,6 +738,8 @@
                             <th>Played</th>
                             <th>Won</th>
                             <th>Lost</th>
+                            <th>NR</th>
+                            <th>NRR</th>
                             <th>Points</th>
                         </tr>
                     </thead>
@@ -702,23 +757,24 @@
             </div>
         </div>
 
+        <!-- Training Modal -->
         <div id="trainingModal" class="modal">
             <div class="modal-content">
                 <h3>Train <span id="trainingPlayerName"></span></h3>
                 <div class="training-options">
                     <div class="training-option" onclick="trainPlayer('batting')">
                         <h4>Batting Training</h4>
-                        <p>Improve batting (+1-3 rating)</p>
+                        <p>Improve batting skills (+1-3 rating)</p>
                         <p><strong>Cost: $0.5M</strong></p>
                     </div>
                     <div class="training-option" onclick="trainPlayer('bowling')">
                         <h4>Bowling Training</h4>
-                        <p>Improve bowling (+1-3 rating)</p>
+                        <p>Improve bowling skills (+1-3 rating)</p>
                         <p><strong>Cost: $0.5M</strong></p>
                     </div>
                     <div class="training-option" onclick="trainPlayer('fitness')">
                         <h4>Fitness Training</h4>
-                        <p>Heal injuries</p>
+                        <p>Reduce injury risk</p>
                         <p><strong>Cost: $0.3M</strong></p>
                     </div>
                 </div>
@@ -733,51 +789,24 @@
         let selectedColor = '#e74c3c';
         let selectedPlayerForTraining = null;
 
-        const playerNames = ['Virat Kumar', 'Rohit Sharma', 'KL Patel', 'Hardik Singh', 'Ravindra Jadav',
+        const playerNames = [
+            'Virat Kumar', 'Rohit Sharma', 'KL Patel', 'Hardik Singh', 'Ravindra Jadav',
             'Shreyas Iyer', 'Rishabh Das', 'Jasprit Khan', 'Mohammed Ashwin', 'Yuzvendra Chahal',
             'Bhuvneshwar Kumar', 'Shikhar Gill', 'Suryakumar Yadav', 'Kuldeep Sharma', 'Deepak Chahar',
-            'Prithvi Shaw', 'Ishan Kishan', 'Axar Patel', 'Shardul Thakur', 'Umesh Yadav'];
+            'Prithvi Shaw', 'Ishan Kishan', 'Axar Patel', 'Shardul Thakur', 'Umesh Yadav'
+        ];
 
-        function initColorPicker() {
-            const colorOptions = document.querySelectorAll('.color-option');
-            colorOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    colorOptions.forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                    selectedColor = this.getAttribute('data-color');
-                });
-            });
-        }
-
-        window.onload = function() {
-            initColorPicker();
+        const defaultGameState = {
+            matchDay: 1,
+            yourTeam: 'Royal Challengers',
+            teamColor: '#e74c3c',
+            matchFormat: 't20',
+            budget: 10.0,
+            squad: [],
+            teams: [],
+            fixtures: [],
+            marketPlayers: []
         };
-
-        function loginWithGoogle() {
-            const name = prompt("Enter your name:");
-            const email = prompt("Enter your email:");
-            
-            if (name && email) {
-                currentUser = {
-                    name: name,
-                    email: email,
-                    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0f2027&color=fff&size=100`
-                };
-                
-                loadUserData();
-                
-                if (!gameState || !gameState.squad || gameState.squad.length === 0) {
-                    showSetupScreen();
-                } else {
-                    showGameScreen();
-                }
-            }
-        }
-
-        function showSetupScreen() {
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('setupScreen').classList.add('active');
-        }
 
         function generateSquad() {
             const roles = ['Batsman', 'Batsman', 'Batsman', 'Wicket-Keeper', 'All-Rounder', 'All-Rounder', 
@@ -803,7 +832,8 @@
                     injuryWeeks: 0,
                     matches: 0,
                     runs: 0,
-                    wickets: 0
+                    wickets: 0,
+                    ballsBowled: 0
                 });
             }
             return squad;
@@ -833,76 +863,31 @@
                     injuryWeeks: 0,
                     matches: 0,
                     runs: 0,
-                    wickets: 0
+                    wickets: 0,
+                    ballsBowled: 0
                 });
             }
             return market;
         }
 
-        function completeSetup(e) {
-            e.preventDefault();
-            
-            const teamName = document.getElementById('teamNameInput').value;
-            const format = document.getElementById('formatSelect').value;
-            
-            gameState = {
-                matchDay: 1,
-                yourTeam: teamName,
-                teamColor: selectedColor,
-                matchFormat: format,
-                budget: 10.0,
-                squad: generateSquad(),
-                teams: [
-                    {name: teamName, played: 0, won: 0, lost: 0, nr: 0, runsFor: 0, ballsFor: 0, runsAgainst: 0, ballsAgainst: 0, points: 0},
-                    {name: 'Mumbai Indians', played: 0, won: 0, lost: 0, nr: 0, runsFor: 0, ballsFor: 0, runsAgainst: 0, ballsAgainst: 0, points: 0},
-                    {name: 'Chennai Kings', played: 0, won: 0, lost: 0, nr: 0, runsFor: 0, ballsFor: 0, runsAgainst: 0, ballsAgainst: 0, points: 0},
-                    {name: 'Delhi Capitals', played: 0, won: 0, lost: 0, nr: 0, runsFor: 0, ballsFor: 0, runsAgainst: 0, ballsAgainst: 0, points: 0},
-                    {name: 'Kolkata Riders', played: 0, won: 0, lost: 0, nr: 0, runsFor: 0, ballsFor: 0, runsAgainst: 0, ballsAgainst: 0, points: 0},
-                    {name: 'Punjab Kings', played: 0, won: 0, lost: 0, nr: 0, runsFor: 0, ballsFor: 0, runsAgainst: 0, ballsAgainst: 0, points: 0},
-                    {name: 'Rajasthan Royals', played: 0, won: 0, lost: 0, nr: 0, runsFor: 0, ballsFor: 0, runsAgainst: 0, ballsAgainst: 0, points: 0},
-                    {name: 'Sunrisers Hyderabad', played: 0, won: 0, lost: 0, nr: 0, runsFor: 0, ballsFor: 0, runsAgainst: 0, ballsAgainst: 0, points: 0}
-                ],
-                fixtures: [],
-                marketPlayers: []
-            };
-            
-            gameState.marketPlayers = generateMarketPlayers();
-            generateFixtures();
-            saveUserData();
-            
-            document.getElementById('setupScreen').classList.remove('active');
-            showGameScreen();
-        }
+        // Color selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    colorOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedColor = this.getAttribute('data-color');
+                });
+            });
+        });
 
-        function showGameScreen() {
-            document.getElementById('gameScreen').classList.add('active');
+        function loginWithGoogle() {
+            const name = prompt("Enter your name:");
+            const email = prompt("Enter your email:");
             
-            document.getElementById('userName').textContent = currentUser.name;
-            document.getElementById('userEmail').textContent = currentUser.email;
-            document.getElementById('userAvatar').src = currentUser.avatar;
-            document.getElementById('displayTeamName').textContent = gameState.yourTeam;
-            document.getElementById('managerName').textContent = currentUser.name;
-            document.getElementById('budgetDisplay').textContent = '$' + gameState.budget.toFixed(1) + 'M';
-            document.getElementById('transferBudget').textContent = gameState.budget.toFixed(1);
-            
-            renderSquad();
-            renderStats();
-            renderTrainingTable();
-            updateLeagueTable();
-            updateMatchInfo();
-            updateWins();
-        }
-
-        function logout() {
-            if (confirm('Your progress is saved. Logout?')) {
-                currentUser = null;
-                gameState = null;
-                document.getElementById('gameScreen').classList.remove('active');
-                document.getElementById('welcomeScreen').style.display = 'block';
-            }
-        }
-
-        function loadUserData() {
-            const savedData = localStorage.getItem(`cricketManager_${currentUser.email}`);
-            if (savedData) {
-                gameState = JSON
+            if (name && email) {
+                currentUser = {
+                    name: name,
+                    email: email,
+                    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0f2027&color=fff&
