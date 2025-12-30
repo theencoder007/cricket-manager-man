@@ -5,274 +5,454 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cricketing Manager v1.0</title>
     <style>
-        /* CSS STYLES */
         :root {
-            --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.8);
+            --bg-dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.1);
+            --gold: #fde047;
             --accent: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --danger: #ef4444;
         }
 
-        body, html {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
             margin: 0;
             padding: 0;
-            height: 100%;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: radial-gradient(circle at top, #1e293b, #0f172a);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        #app {
+        /* Hologram Background Effect */
+        .hologram-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(56, 189, 248, 0.03);
+            white-space: nowrap;
+            z-index: -1;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
             width: 100%;
-            max-width: 500px;
-            padding: 20px;
-        }
-
-        .screen {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            animation: slideIn 0.4s ease-out;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid var(--glass);
+            z-index: 1000;
         }
 
-        .hidden { display: none; }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .nav-item {
+            cursor: pointer;
+            color: #94a3b8;
+            font-weight: 600;
+            transition: 0.3s;
         }
 
-        h1 { font-size: 2.5rem; margin-bottom: 10px; color: var(--accent); }
-        .version { font-size: 0.9rem; color: var(--text-dim); }
-        .welcome-note { font-size: 1.1rem; color: var(--text-dim); margin-bottom: 30px; line-height: 1.5; }
+        .nav-item:hover, .nav-item.active {
+            color: var(--accent);
+        }
 
-        .input-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--accent); }
+        /* Screens */
+        .screen {
+            display: none;
+            padding: 20px;
+            padding-bottom: 100px;
+            max-width: 1200px;
+            margin: auto;
+        }
 
-        input, select {
-            width: 100%;
-            padding: 12px;
+        .active-screen { display: block; }
+
+        /* Custom Dropdown for Team Selection */
+        .custom-select {
+            background: var(--glass);
+            border: 1px solid var(--accent);
+            padding: 10px;
             border-radius: 8px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: white;
-            font-size: 1rem;
-            box-sizing: border-box;
+            width: 100%;
+            margin-bottom: 20px;
         }
 
-        .btn-stack { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+        .team-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: 0.2s;
+        }
+
+        .team-logo-small {
+            width: 30px;
+            height: 30px;
+            margin-right: 15px;
+            object-fit: contain;
+        }
+
+        /* Dashboard Boxes */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .managed-by {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .stats-box {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .stats-box:hover { transform: scale(1.02); }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th { text-align: left; color: var(--accent); padding: 10px; border-bottom: 1px solid var(--glass); }
+        td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .form-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 3px;
+        }
+        .w { background: #22c55e; } .l { background: #ef4444; }
+
+        /* Match Engine UI */
+        .match-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
 
         button {
-            padding: 14px;
+            padding: 10px 20px;
             border-radius: 8px;
             border: none;
             background: var(--accent);
-            color: #0f172a;
-            font-weight: 800;
-            font-size: 1rem;
+            color: #000;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            transition: 0.2s;
         }
 
-        button:hover { background: var(--accent-hover); transform: translateY(-2px); }
-        button:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+        button:hover { opacity: 0.8; }
+        button.secondary { background: var(--glass); color: white; border: 1px solid var(--glass); }
 
-        .exit-btn { background: transparent; border: 2px solid var(--danger); color: var(--danger); }
-        .exit-btn:hover { background: var(--danger); color: white; }
+        .play-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #22c55e;
+            color: white;
+        }
 
-        .back-link { margin-top: 20px; display: block; color: var(--text-dim); cursor: pointer; text-decoration: underline; }
+        .player-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+        }
+
+        .foreign-badge {
+            background: #f97316;
+            font-size: 0.7rem;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="app">
-        <section id="screen-login" class="screen">
-            <h1>Cricketing Manager <span class="version">v1.0</span></h1>
-            <p class="welcome-note">The ultimate cricket simulation. Build your squad, master the tactics, and conquer the league.</p>
-            <div class="input-group">
-                <input type="text" id="login-user" placeholder="Enter Username">
-            </div>
-            <button style="width: 100%;" onclick="handleLogin()">Login to Club</button>
-        </section>
+    <div class="hologram-bg">CRICKETING MANAGER v1.0</div>
 
-        <section id="screen-menu" class="screen hidden">
-            <h1 id="menu-title">Main Menu</h1>
-            <div class="btn-stack">
-                <button onclick="showScreen('screen-new-game')">New Game</button>
-                <button id="continue-btn" onclick="handleContinue()">Continue</button>
-                <button onclick="showSettings()">Settings</button>
-                <button class="exit-btn" onclick="handleLogout()">Exit Game</button>
+    <div id="settings-screen" class="screen active-screen">
+        <h2>Welcome Manager</h2>
+        <input type="text" id="user-name" placeholder="Enter Your Name" class="custom-select" style="background: white; color: black;">
+        
+        <h3>Select Your Franchise</h3>
+        <div id="team-selector-list" class="card">
             </div>
-        </section>
-
-        <section id="screen-new-game" class="screen hidden">
-            <h2>Start New Career</h2>
-            <div class="input-group">
-                <label>Manager Name</label>
-                <input type="text" id="new-mgr-name" placeholder="E.g. Coach Smith">
-            </div>
-            <div class="input-group">
-                <label>Choose IPL Team</label>
-                <select id="new-team-select">
-                    <option value="CSK">Chennai Super Kings</option>
-                    <option value="MI">Mumbai Indians</option>
-                    <option value="RCB">Royal Challengers Bengaluru</option>
-                    <option value="KKR">Kolkata Knight Riders</option>
-                    <option value="RR">Rajasthan Royals</option>
-                    <option value="SRH">Sunrisers Hyderabad</option>
-                    <option value="DC">Delhi Capitals</option>
-                    <option value="PBKS">Punjab Kings</option>
-                    <option value="GT">Gujarat Titans</option>
-                    <option value="LSG">Lucknow Super Giants</option>
-                </select>
-            </div>
-            <button style="width: 100%;" onclick="createNewGame()">Create Profile</button>
-            <span class="back-link" onclick="showScreen('screen-menu')">Cancel</span>
-        </section>
-
-        <section id="screen-settings" class="screen hidden">
-            <h2>Settings</h2>
-            <div class="input-group">
-                <label>Update Manager Name</label>
-                <input type="text" id="edit-mgr-name">
-            </div>
-            <div class="input-group">
-                <label>Transfer to Team</label>
-                <select id="edit-team-select">
-                    <option value="CSK">Chennai Super Kings</option>
-                    <option value="MI">Mumbai Indians</option>
-                    <option value="RCB">Royal Challengers Bengaluru</option>
-                    <option value="KKR">Kolkata Knight Riders</option>
-                    <option value="RR">Rajasthan Royals</option>
-                    <option value="SRH">Sunrisers Hyderabad</option>
-                    <option value="DC">Delhi Capitals</option>
-                    <option value="PBKS">Punjab Kings</option>
-                    <option value="GT">Gujarat Titans</option>
-                    <option value="LSG">Lucknow Super Giants</option>
-                </select>
-            </div>
-            <button style="width: 100%;" onclick="saveSettings()">Save Changes</button>
-            <span class="back-link" onclick="showScreen('screen-menu')">Back to Menu</span>
-        </section>
+        <button onclick="startGame()">Start Career</button>
     </div>
 
+    <div id="dashboard-screen" class="screen">
+        <button id="next-day-btn" class="play-btn" onclick="advanceDay()">NEXT DAY</button>
+        
+        <div class="dashboard-grid">
+            <div class="card" style="display: flex; align-items: center; gap: 20px;">
+                <img id="user-team-logo" class="team-logo-small" style="width: 80px; height: 80px;" src="" alt="">
+                <div>
+                    <h2 id="user-team-name" style="margin: 0;">Team Name</h2>
+                    <div class="managed-by">Managed by: <span id="display-user-name"></span></div>
+                </div>
+            </div>
+
+            <div class="card stats-box" onclick="showScreen('team-stats-screen', 'runs')">
+                <h4 style="margin:0">Top Run Scorer</h4>
+                <div id="top-batsman">Loading...</div>
+            </div>
+
+            <div class="card stats-box" onclick="showScreen('team-stats-screen', 'wickets')">
+                <h4 style="margin:0">Top Wicket Taker</h4>
+                <div id="top-bowler">Loading...</div>
+            </div>
+
+            <div class="card stats-box" onclick="showScreen('league-table-screen')">
+                <h4>Points Table Rank</h4>
+                <div id="current-rank" style="font-size: 2rem; font-weight: bold; color: var(--gold);">#1</div>
+                <div style="font-size: 0.8rem; color: #94a3b8;">Click to view full table</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="league-table-screen" class="screen">
+        <h3>Tournament Rankings</h3>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Team</th>
+                        <th>M</th>
+                        <th>W</th>
+                        <th>L</th>
+                        <th>NRR</th>
+                        <th>Pts</th>
+                        <th>Last 5</th>
+                    </tr>
+                </thead>
+                <tbody id="points-table-body"></tbody>
+            </table>
+        </div>
+        <button class="secondary" onclick="showScreen('dashboard-screen')" style="margin-top: 20px;">Back Home</button>
+    </div>
+
+    <div id="team-screen" class="screen">
+        <h3>Squad Management</h3>
+        <p style="font-size: 0.8rem; color: var(--accent);">Max 4 Foreign Players. 11 Starters + Bench.</p>
+        <div id="squad-list" class="card"></div>
+    </div>
+
+    <div id="match-screen" class="screen">
+        <div class="card">
+            <div style="display:flex; justify-content: space-between;">
+                <h3 id="match-teams">CSK vs MI</h3>
+                <h3 id="match-score">0 - 0 (0.0)</h3>
+            </div>
+            <div id="commentary-box" style="height: 150px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; margin: 10px 0; font-family: monospace;">
+                Welcome to the match!
+            </div>
+            
+            <div id="batting-controls" style="display:none;">
+                <p>Batting Style:</p>
+                <div class="match-controls">
+                    <button onclick="playBall('defensive')">Defensive</button>
+                    <button onclick="playBall('slow')">Slow</button>
+                    <button onclick="playBall('aggressive')">Aggressive</button>
+                    <button onclick="playBall('fast')">Fast</button>
+                    <button onclick="playBall('allout')">All Out</button>
+                </div>
+            </div>
+
+            <div id="bowling-controls" style="display:none;">
+                <p>Bowling Style:</p>
+                <div class="match-controls">
+                    <button onclick="playBall('inswing')">In-Swing</button>
+                    <button onclick="playBall('outswing')">Out-Swing</button>
+                    <button onclick="playBall('googly')">Googly/Spin</button>
+                    <button onclick="playBall('pace')">150k+ Fast</button>
+                </div>
+            </div>
+
+            <div id="sim-options" class="match-controls">
+                <button class="secondary" onclick="simOver()">Sim Over</button>
+                <button class="secondary" onclick="simMatch()">Instant Result</button>
+            </div>
+        </div>
+    </div>
+
+    <nav id="main-nav" class="bottom-nav" style="display: none;">
+        <div class="nav-item active" onclick="showScreen('dashboard-screen')">HOME</div>
+        <div class="nav-item" onclick="showScreen('team-screen')">TEAM</div>
+        <div class="nav-item" onclick="showScreen('league-table-screen')">LEAGUE</div>
+        <div class="nav-item" onclick="alert('Tournament Stats coming in next update!')">STATS</div>
+    </nav>
+
     <script>
-        // JAVASCRIPT LOGIC
-        let currentUser = "";
-        let gameData = null;
+        // Game State
+        let gameState = {
+            userName: "",
+            userTeam: null,
+            day: 1,
+            isMatchDay: false,
+            teams: [
+                { id: 'CSK', name: 'Chennai Super Kings', logo: 'https://static.iplt20.com/storage/ipl/logos/CSK.png', color: '#FFF100', m:0, w:0, l:0, nrr: 0, pts: 0, form: ['W','W','L'] },
+                { id: 'MI', name: 'Mumbai Indians', logo: 'https://static.iplt20.com/storage/ipl/logos/MI.png', color: '#004BA0', m:0, w:0, l:0, nrr: 0, pts: 0, form: ['L','W','W'] },
+                { id: 'RCB', name: 'Royal Challengers Bengaluru', logo: 'https://static.iplt20.com/storage/ipl/logos/RCB.png', color: '#CC1213', m:0, w:0, l:0, nrr: 0, pts: 0, form: ['L','L','W'] },
+                { id: 'KKR', name: 'Kolkata Knight Riders', logo: 'https://static.iplt20.com/storage/ipl/logos/KKR.png', color: '#2E0854', m:0, w:0, l:0, nrr: 0, pts: 0, form: ['W','W','W'] },
+                { id: 'RR', name: 'Rajasthan Royals', logo: 'https://static.iplt20.com/storage/ipl/logos/RR.png', color: '#FC4CFC', m:0, w:0, l:0, nrr: 0, pts: 0, form: ['L','W','L'] }
+            ],
+            players: [
+                { name: "Virat Kohli", team: "RCB", runs: 450, wickets: 0, bat: 95, bowl: 10, isForeign: false },
+                { name: "MS Dhoni", team: "CSK", runs: 210, wickets: 0, bat: 85, bowl: 15, isForeign: false },
+                { name: "Rashid Khan", team: "GT", runs: 80, wickets: 22, bat: 40, bowl: 98, isForeign: true },
+                { name: "Jasprit Bumrah", team: "MI", runs: 12, wickets: 24, bat: 10, bowl: 99, isForeign: false },
+                { name: "Jos Buttler", team: "RR", runs: 380, wickets: 0, bat: 92, bowl: 5, isForeign: true }
+            ]
+        };
 
-        // Utility to switch screens
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-            document.getElementById(screenId).classList.remove('hidden');
-            
-            // Special check for Continue button state
-            if(screenId === 'screen-menu') {
-                updateContinueButton();
-            }
+        // Initialize Selection
+        function initSelectors() {
+            const list = document.getElementById('team-selector-list');
+            gameState.teams.forEach(team => {
+                const div = document.createElement('div');
+                div.className = 'team-option';
+                div.style.background = team.color;
+                div.style.color = team.color === '#FFF100' ? 'black' : 'white';
+                div.innerHTML = `
+                    <img src="${team.logo}" class="team-logo-small">
+                    <strong>${team.name}</strong>
+                `;
+                div.onclick = () => {
+                    document.querySelectorAll('.team-option').forEach(el => el.style.border = 'none');
+                    div.style.border = '3px solid white';
+                    gameState.userTeam = team;
+                };
+                list.appendChild(div);
+            });
         }
 
-        // LOGIN: Load data from LocalStorage
-        function handleLogin() {
-            const user = document.getElementById('login-user').value.trim();
-            if(!user) { alert("Please enter a username!"); return; }
+        function startGame() {
+            const name = document.getElementById('user-name').value;
+            if(!name || !gameState.userTeam) return alert("Please enter name and select team");
             
-            currentUser = user;
-            const savedData = localStorage.getItem('cricket_mgr_' + currentUser);
+            gameState.userName = name;
+            document.getElementById('display-user-name').innerText = name;
+            document.getElementById('user-team-name').innerText = gameState.userTeam.name;
+            document.getElementById('user-team-logo').src = gameState.userTeam.logo;
             
-            if(savedData) {
-                gameData = JSON.parse(savedData);
+            showScreen('dashboard-screen');
+            document.getElementById('main-nav').style.display = 'flex';
+            updatePointsTable();
+            updateStats();
+        }
+
+        function showScreen(screenId, filter) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+            document.getElementById(screenId).classList.add('active-screen');
+            
+            if(screenId === 'team-screen') renderSquad();
+        }
+
+        function updatePointsTable() {
+            const tbody = document.getElementById('points-table-body');
+            tbody.innerHTML = "";
+            gameState.teams.sort((a,b) => b.pts - a.pts).forEach((team, idx) => {
+                const row = `<tr>
+                    <td>${idx+1}</td>
+                    <td><img src="${team.logo}" class="team-logo-small" style="width:20px"> ${team.id}</td>
+                    <td>${team.m}</td><td>${team.w}</td><td>${team.l}</td>
+                    <td>${team.nrr.toFixed(3)}</td>
+                    <td style="color:var(--gold)">${team.pts}</td>
+                    <td>${team.form.map(f => `<span class="form-dot ${f.toLowerCase()}"></span>`).join('')}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function updateStats() {
+            const topB = gameState.players.sort((a,b) => b.runs - a.runs)[0];
+            const topW = gameState.players.sort((a,b) => b.wickets - a.wickets)[0];
+            document.getElementById('top-batsman').innerText = `${topB.name} (${topB.runs})`;
+            document.getElementById('top-bowler').innerText = `${topW.name} (${topW.wickets})`;
+        }
+
+        function renderSquad() {
+            const container = document.getElementById('squad-list');
+            container.innerHTML = "";
+            gameState.players.filter(p => p.team === gameState.userTeam.id).forEach(p => {
+                container.innerHTML += `
+                    <div class="player-row">
+                        <div>
+                            ${p.name} ${p.isForeign ? '<span class="foreign-badge">INTL</span>' : ''}
+                            <div class="managed-by">Skills: ${p.bat}/${p.bowl}</div>
+                        </div>
+                        <button class="secondary" style="font-size:0.7rem">BENCH</button>
+                    </div>
+                `;
+            });
+        }
+
+        function advanceDay() {
+            gameState.day++;
+            const btn = document.getElementById('next-day-btn');
+            
+            // Logic: Every 2nd day is a match day for the user
+            if(gameState.day % 2 === 0) {
+                btn.innerText = "PLAY MATCH";
+                btn.style.background = "#ef4444";
+                btn.onclick = startMatch;
             } else {
-                gameData = null;
+                btn.innerText = "NEXT DAY";
+                btn.style.background = "#22c55e";
+                btn.onclick = advanceDay;
+                alert("Simulating League matches... Day " + gameState.day);
             }
+        }
+
+        function startMatch() {
+            showScreen('match-screen');
+            document.getElementById('batting-controls').style.display = 'block';
+            document.getElementById('commentary-box').innerHTML = "Match Started! You are Batting.";
+        }
+
+        function playBall(type) {
+            const outcomes = [0, 1, 1, 2, 4, 6, 'W'];
+            const res = outcomes[Math.floor(Math.random() * outcomes.length)];
+            const log = document.getElementById('commentary-box');
             
-            showScreen('screen-menu');
-        }
-
-        // NEW GAME: Set up profile
-        function createNewGame() {
-            const name = document.getElementById('new-mgr-name').value.trim();
-            const team = document.getElementById('new-team-select').value;
+            let message = "";
+            if(res === 'W') message = `OUT! The batsman tried to play ${type} but missed!`;
+            else message = `The batsman plays it ${type} and gets ${res} runs.`;
             
-            if(!name) { alert("Please enter a Manager Name!"); return; }
-
-            gameData = {
-                managerName: name,
-                team: team,
-                level: 1,
-                createdDate: new Date().toLocaleDateString()
-            };
-
-            saveToStorage();
-            alert("Career Created Successfully!");
-            showScreen('screen-menu');
+            log.innerHTML = `<div>${message}</div>` + log.innerHTML;
         }
 
-        // CONTINUE: Check if game exists
-        function handleContinue() {
-            if(!gameData) {
-                alert("No save file found for this user. Please start a New Game.");
-            } else {
-                alert(`Welcome back Coach ${gameData.managerName}! Loading your ${gameData.team} career...`);
-                // Next step would be the actual game dashboard
-            }
-        }
-
-        // SETTINGS: Load existing values and save changes
-        function showSettings() {
-            if(!gameData) {
-                alert("Please start a game first to access settings.");
-                return;
-            }
-            document.getElementById('edit-mgr-name').value = gameData.managerName;
-            document.getElementById('edit-team-select').value = gameData.team;
-            showScreen('screen-settings');
-        }
-
-        function saveSettings() {
-            gameData.managerName = document.getElementById('edit-mgr-name').value;
-            gameData.team = document.getElementById('edit-team-select').value;
-            saveToStorage();
-            alert("Settings Updated!");
-            showScreen('screen-menu');
-        }
-
-        // EXIT: Clear session and return to login
-        function handleLogout() {
-            currentUser = "";
-            gameData = null;
-            document.getElementById('login-user').value = "";
-            showScreen('screen-login');
-        }
-
-        // STORAGE HELPERS
-        function saveToStorage() {
-            localStorage.setItem('cricket_mgr_' + currentUser, JSON.stringify(gameData));
-        }
-
-        function updateContinueButton() {
-            const btn = document.getElementById('continue-btn');
-            if(!gameData) {
-                btn.disabled = true;
-                btn.style.opacity = "0.5";
-            } else {
-                btn.disabled = false;
-                btn.style.opacity = "1";
-            }
-        }
     </script>
 </body>
 </html>
