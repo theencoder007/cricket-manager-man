@@ -13,446 +13,351 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: white;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            min-height: 100vh;
+            margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* Hologram Background Effect */
-        .hologram-bg {
+        /* Holographic Background */
+        .hologram {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-15deg);
-            font-size: 8rem;
-            font-weight: 900;
-            color: rgba(56, 189, 248, 0.03);
-            white-space: nowrap;
-            z-index: -1;
-            pointer-events: none;
-            user-select: none;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+            font-size: 10vw; font-weight: 900;
+            color: rgba(56, 189, 248, 0.04);
+            white-space: nowrap; z-index: -1; pointer-events: none;
         }
+
+        .screen { display: none; padding: 20px; padding-bottom: 100px; max-width: 800px; margin: auto; animation: fadeIn 0.4s ease; }
+        .active-screen { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: var(--glass); padding: 20px; border-radius: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        
+        /* Dropdown Selection Style */
+        .team-option {
+            display: flex; align-items: center; padding: 12px; margin: 8px 0; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: 0.2s;
+        }
+        .team-option:hover { transform: scale(1.02); }
+        .team-logo { width: 40px; height: 40px; margin-right: 15px; object-fit: contain; }
+
+        /* Dashboard Header */
+        .header-box { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .managed-by { font-size: 0.8rem; opacity: 0.7; color: var(--accent); }
+
+        /* Stats Grid */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .stats-box { cursor: pointer; text-align: center; }
+        .stats-box h4 { margin: 0; font-size: 0.8rem; color: var(--accent); }
+        .stats-box p { margin: 5px 0 0; font-weight: bold; }
 
         /* Navigation */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 0;
-            border-top: 1px solid var(--glass);
-            z-index: 1000;
+            position: fixed; bottom: 0; width: 100%; background: rgba(15, 23, 42, 0.98);
+            display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid var(--glass); z-index: 1000;
         }
+        .nav-item { cursor: pointer; color: #94a3b8; font-weight: bold; font-size: 0.8rem; }
+        .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
-        .nav-item {
-            cursor: pointer;
-            color: #94a3b8;
-            font-weight: 600;
-            transition: 0.3s;
-        }
+        /* Match Engine */
+        .control-btn { padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; flex: 1; margin: 5px; }
+        .commentary { height: 120px; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 10px; margin: 15px 0; font-family: monospace; font-size: 0.9rem; border-radius: 8px; }
 
-        .nav-item:hover, .nav-item.active {
-            color: var(--accent);
-        }
-
-        /* Screens */
-        .screen {
-            display: none;
-            padding: 20px;
-            padding-bottom: 100px;
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        .active-screen { display: block; }
-
-        /* Custom Dropdown for Team Selection */
-        .custom-select {
-            background: var(--glass);
-            border: 1px solid var(--accent);
-            padding: 10px;
-            border-radius: 8px;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .team-option {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            cursor: pointer;
-            margin: 5px 0;
-            border-radius: 5px;
-            transition: 0.2s;
-        }
-
-        .team-logo-small {
-            width: 30px;
-            height: 30px;
-            margin-right: 15px;
-            object-fit: contain;
-        }
-
-        /* Dashboard Boxes */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--glass);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
-        }
-
-        .managed-by {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-top: 5px;
-        }
-
-        .stats-box {
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .stats-box:hover { transform: scale(1.02); }
-
-        /* Table Styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th { text-align: left; color: var(--accent); padding: 10px; border-bottom: 1px solid var(--glass); }
+        /* Points Table */
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; padding: 10px; border-bottom: 1px solid var(--glass); color: var(--accent); }
         td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
-        .form-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 3px;
-        }
+        .dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 3px; }
         .w { background: #22c55e; } .l { background: #ef4444; }
 
-        /* Match Engine UI */
-        .match-controls {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            background: var(--accent);
-            color: #000;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        button:hover { opacity: 0.8; }
-        button.secondary { background: var(--glass); color: white; border: 1px solid var(--glass); }
-
-        .play-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #22c55e;
-            color: white;
-        }
-
-        .player-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255,255,255,0.03);
-            padding: 10px;
-            margin-bottom: 5px;
-            border-radius: 8px;
-        }
-
-        .foreign-badge {
-            background: #f97316;
-            font-size: 0.7rem;
-            padding: 2px 5px;
-            border-radius: 4px;
-        }
-
+        .player-row { display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.03); margin-bottom: 5px; border-radius: 8px; }
+        .foreign-badge { background: #f97316; font-size: 0.6rem; padding: 2px 5px; border-radius: 4px; margin-left: 5px; }
+        .next-day-btn { position: fixed; top: 20px; right: 20px; background: #22c55e; color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(34,197,94,0.3); }
     </style>
 </head>
 <body>
 
-    <div class="hologram-bg">CRICKETING MANAGER v1.0</div>
+    <div class="hologram">CRICKETING MANAGER v1.0</div>
 
-    <div id="settings-screen" class="screen active-screen">
-        <h2>Welcome Manager</h2>
-        <input type="text" id="user-name" placeholder="Enter Your Name" class="custom-select" style="background: white; color: black;">
-        
-        <h3>Select Your Franchise</h3>
-        <div id="team-selector-list" class="card">
-            </div>
-        <button onclick="startGame()">Start Career</button>
+    <div id="screen-start" class="screen active-screen">
+        <h2>Career Setup</h2>
+        <input type="text" id="mgr-input" placeholder="Enter Manager Name" style="width:100%; padding:12px; border-radius:8px; border:none; margin-bottom:20px;">
+        <h3>Select Franchise</h3>
+        <div id="team-list"></div>
+        <button onclick="initGame()" style="width:100%; padding:15px; background:var(--accent); border:none; border-radius:10px; font-weight:900; margin-top:10px;">LAUNCH CAREER</button>
     </div>
 
-    <div id="dashboard-screen" class="screen">
-        <button id="next-day-btn" class="play-btn" onclick="advanceDay()">NEXT DAY</button>
-        
+    <div id="screen-home" class="screen">
+        <div onclick="processDay()" id="day-btn" class="next-day-btn">NEXT DAY</div>
+        <div class="header-box">
+            <img id="dash-logo" src="" class="team-logo" style="width:70px; height:70px;">
+            <div>
+                <h2 id="dash-team-name" style="margin:0">Team Name</h2>
+                <div class="managed-by">Managed by: <span id="dash-mgr-name"></span></div>
+            </div>
+        </div>
+
         <div class="dashboard-grid">
-            <div class="card" style="display: flex; align-items: center; gap: 20px;">
-                <img id="user-team-logo" class="team-logo-small" style="width: 80px; height: 80px;" src="" alt="">
-                <div>
-                    <h2 id="user-team-name" style="margin: 0;">Team Name</h2>
-                    <div class="managed-by">Managed by: <span id="display-user-name"></span></div>
-                </div>
+            <div class="card stats-box" onclick="showScreen('screen-stats-detail', 'runs')">
+                <h4>Top Scorer</h4>
+                <p id="top-run-player">-</p>
             </div>
-
-            <div class="card stats-box" onclick="showScreen('team-stats-screen', 'runs')">
-                <h4 style="margin:0">Top Run Scorer</h4>
-                <div id="top-batsman">Loading...</div>
+            <div class="card stats-box" onclick="showScreen('screen-stats-detail', 'wickets')">
+                <h4>Top Wickets</h4>
+                <p id="top-wicket-player">-</p>
             </div>
-
-            <div class="card stats-box" onclick="showScreen('team-stats-screen', 'wickets')">
-                <h4 style="margin:0">Top Wicket Taker</h4>
-                <div id="top-bowler">Loading...</div>
-            </div>
-
-            <div class="card stats-box" onclick="showScreen('league-table-screen')">
-                <h4>Points Table Rank</h4>
-                <div id="current-rank" style="font-size: 2rem; font-weight: bold; color: var(--gold);">#1</div>
-                <div style="font-size: 0.8rem; color: #94a3b8;">Click to view full table</div>
+            <div class="card stats-box" style="grid-column: span 2;" onclick="showScreen('screen-league')">
+                <h4>League Position</h4>
+                <h1 id="league-rank" style="margin:5px 0; color:var(--gold);">#1</h1>
+                <div style="font-size:0.7rem; opacity:0.6;">Click to view Points Table</div>
             </div>
         </div>
     </div>
 
-    <div id="league-table-screen" class="screen">
-        <h3>Tournament Rankings</h3>
-        <div class="card">
+    <div id="screen-league" class="screen">
+        <h3>Points Table</h3>
+        <div class="card" style="padding:10px;">
             <table>
-                <thead>
-                    <tr>
-                        <th>Pos</th>
-                        <th>Team</th>
-                        <th>M</th>
-                        <th>W</th>
-                        <th>L</th>
-                        <th>NRR</th>
-                        <th>Pts</th>
-                        <th>Last 5</th>
-                    </tr>
-                </thead>
-                <tbody id="points-table-body"></tbody>
+                <thead><tr><th>Team</th><th>M</th><th>W</th><th>L</th><th>NRR</th><th>Pts</th><th>Form</th></tr></thead>
+                <tbody id="table-body"></tbody>
             </table>
         </div>
-        <button class="secondary" onclick="showScreen('dashboard-screen')" style="margin-top: 20px;">Back Home</button>
     </div>
 
-    <div id="team-screen" class="screen">
+    <div id="screen-team" class="screen">
         <h3>Squad Management</h3>
-        <p style="font-size: 0.8rem; color: var(--accent);">Max 4 Foreign Players. 11 Starters + Bench.</p>
-        <div id="squad-list" class="card"></div>
+        <div id="player-container"></div>
     </div>
 
-    <div id="match-screen" class="screen">
+    <div id="screen-match" class="screen">
         <div class="card">
-            <div style="display:flex; justify-content: space-between;">
-                <h3 id="match-teams">CSK vs MI</h3>
-                <h3 id="match-score">0 - 0 (0.0)</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span id="m-team-a">TEAM A</span>
+                <h2 id="m-score">0/0</h2>
+                <span id="m-team-b">TEAM B</span>
             </div>
-            <div id="commentary-box" style="height: 150px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; margin: 10px 0; font-family: monospace;">
-                Welcome to the match!
-            </div>
+            <div id="m-overs" style="text-align:center; font-size:0.8rem; color:var(--accent);">Overs: 0.0</div>
             
-            <div id="batting-controls" style="display:none;">
-                <p>Batting Style:</p>
-                <div class="match-controls">
-                    <button onclick="playBall('defensive')">Defensive</button>
-                    <button onclick="playBall('slow')">Slow</button>
-                    <button onclick="playBall('aggressive')">Aggressive</button>
-                    <button onclick="playBall('fast')">Fast</button>
-                    <button onclick="playBall('allout')">All Out</button>
+            <div class="commentary" id="m-log">Match starting...</div>
+
+            <div id="bat-controls" style="display:none;">
+                <p style="text-align:center; font-size:0.8rem;">Select Intent:</p>
+                <div style="display:flex; flex-wrap:wrap;">
+                    <button class="control-btn" onclick="playBall('defensive')">Defensive</button>
+                    <button class="control-btn" onclick="playBall('slow')">Slow</button>
+                    <button class="control-btn" onclick="playBall('aggressive')">Aggressive</button>
+                    <button class="control-btn" onclick="playBall('allout')">All Out</button>
                 </div>
             </div>
-
-            <div id="bowling-controls" style="display:none;">
-                <p>Bowling Style:</p>
-                <div class="match-controls">
-                    <button onclick="playBall('inswing')">In-Swing</button>
-                    <button onclick="playBall('outswing')">Out-Swing</button>
-                    <button onclick="playBall('googly')">Googly/Spin</button>
-                    <button onclick="playBall('pace')">150k+ Fast</button>
-                </div>
-            </div>
-
-            <div id="sim-options" class="match-controls">
-                <button class="secondary" onclick="simOver()">Sim Over</button>
-                <button class="secondary" onclick="simMatch()">Instant Result</button>
-            </div>
+            <button id="instant-btn" class="control-btn" style="width:100%; background:var(--glass); color:white; margin-top:20px;" onclick="simFullMatch()">Instant Finish</button>
         </div>
     </div>
 
-    <nav id="main-nav" class="bottom-nav" style="display: none;">
-        <div class="nav-item active" onclick="showScreen('dashboard-screen')">HOME</div>
-        <div class="nav-item" onclick="showScreen('team-screen')">TEAM</div>
-        <div class="nav-item" onclick="showScreen('league-table-screen')">LEAGUE</div>
-        <div class="nav-item" onclick="alert('Tournament Stats coming in next update!')">STATS</div>
+    <nav class="bottom-nav" id="main-nav" style="display:none;">
+        <div class="nav-item active" onclick="showScreen('screen-home')">HOME</div>
+        <div class="nav-item" onclick="showScreen('screen-team')">TEAM</div>
+        <div class="nav-item" onclick="showScreen('screen-league')">LEAGUE</div>
+        <div class="nav-item" onclick="alert('Tournament stats coming soon!')">STATS</div>
     </nav>
 
     <script>
-        // Game State
-        let gameState = {
-            userName: "",
+        const TEAMS = [
+            { id: 'CSK', name: 'Chennai Super Kings', logo: 'https://static.iplt20.com/storage/ipl/logos/CSK.png', color: '#FFF100', txt: '#000' },
+            { id: 'MI', name: 'Mumbai Indians', logo: 'https://static.iplt20.com/storage/ipl/logos/MI.png', color: '#004BA0', txt: '#fff' },
+            { id: 'RCB', name: 'Royal Challengers Bengaluru', logo: 'https://static.iplt20.com/storage/ipl/logos/RCB.png', color: '#CC1213', txt: '#fff' },
+            { id: 'KKR', name: 'Kolkata Knight Riders', logo: 'https://static.iplt20.com/storage/ipl/logos/KKR.png', color: '#2E0854', txt: '#fff' },
+            { id: 'RR', name: 'Rajasthan Royals', logo: 'https://static.iplt20.com/storage/ipl/logos/RR.png', color: '#FC4CFC', txt: '#000' },
+            { id: 'SRH', name: 'Sunrisers Hyderabad', logo: 'https://static.iplt20.com/storage/ipl/logos/SRH.png', color: '#FF6600', txt: '#fff' },
+            { id: 'DC', name: 'Delhi Capitals', logo: 'https://static.iplt20.com/storage/ipl/logos/DC.png', color: '#0116CF', txt: '#fff' },
+            { id: 'PBKS', name: 'Punjab Kings', logo: 'https://static.iplt20.com/storage/ipl/logos/PBKS.png', color: '#ED1B24', txt: '#fff' },
+            { id: 'GT', name: 'Gujarat Titans', logo: 'https://static.iplt20.com/storage/ipl/logos/GT.png', color: '#1B2133', txt: '#fff' },
+            { id: 'LSG', name: 'Lucknow Super Giants', logo: 'https://static.iplt20.com/storage/ipl/logos/LSG.png', color: '#0057E2', txt: '#fff' }
+        ];
+
+        let state = {
+            mgr: "",
             userTeam: null,
             day: 1,
-            isMatchDay: false,
-            teams: [
-                { id: 'CSK', name: 'Chennai Super Kings', logo: 'https://static.iplt20.com/storage/ipl/logos/CSK.png', color: '#FFF100', m:0, w:0, l:0, nrr: 0, pts: 0, form: ['W','W','L'] },
-                { id: 'MI', name: 'Mumbai Indians', logo: 'https://static.iplt20.com/storage/ipl/logos/MI.png', color: '#004BA0', m:0, w:0, l:0, nrr: 0, pts: 0, form: ['L','W','W'] },
-                { id: 'RCB', name: 'Royal Challengers Bengaluru', logo: 'https://static.iplt20.com/storage/ipl/logos/RCB.png', color: '#CC1213', m:0, w:0, l:0, nrr: 0, pts: 0, form: ['L','L','W'] },
-                { id: 'KKR', name: 'Kolkata Knight Riders', logo: 'https://static.iplt20.com/storage/ipl/logos/KKR.png', color: '#2E0854', m:0, w:0, l:0, nrr: 0, pts: 0, form: ['W','W','W'] },
-                { id: 'RR', name: 'Rajasthan Royals', logo: 'https://static.iplt20.com/storage/ipl/logos/RR.png', color: '#FC4CFC', m:0, w:0, l:0, nrr: 0, pts: 0, form: ['L','W','L'] }
-            ],
-            players: [
-                { name: "Virat Kohli", team: "RCB", runs: 450, wickets: 0, bat: 95, bowl: 10, isForeign: false },
-                { name: "MS Dhoni", team: "CSK", runs: 210, wickets: 0, bat: 85, bowl: 15, isForeign: false },
-                { name: "Rashid Khan", team: "GT", runs: 80, wickets: 22, bat: 40, bowl: 98, isForeign: true },
-                { name: "Jasprit Bumrah", team: "MI", runs: 12, wickets: 24, bat: 10, bowl: 99, isForeign: false },
-                { name: "Jos Buttler", team: "RR", runs: 380, wickets: 0, bat: 92, bowl: 5, isForeign: true }
-            ]
+            league: [],
+            players: [],
+            currentMatch: null
         };
 
-        // Initialize Selection
-        function initSelectors() {
-            const list = document.getElementById('team-selector-list');
-            gameState.teams.forEach(team => {
+        // UI Initialization
+        window.onload = () => {
+            const list = document.getElementById('team-list');
+            TEAMS.forEach(t => {
                 const div = document.createElement('div');
                 div.className = 'team-option';
-                div.style.background = team.color;
-                div.style.color = team.color === '#FFF100' ? 'black' : 'white';
-                div.innerHTML = `
-                    <img src="${team.logo}" class="team-logo-small">
-                    <strong>${team.name}</strong>
-                `;
+                div.style.background = t.color;
+                div.style.color = t.txt;
+                div.innerHTML = `<img src="${t.logo}" class="team-logo"> <strong>${t.name}</strong>`;
                 div.onclick = () => {
-                    document.querySelectorAll('.team-option').forEach(el => el.style.border = 'none');
-                    div.style.border = '3px solid white';
-                    gameState.userTeam = team;
+                    document.querySelectorAll('.team-option').forEach(el => el.style.borderColor = 'transparent');
+                    div.style.borderColor = 'white';
+                    state.userTeam = t;
                 };
                 list.appendChild(div);
             });
+            initData();
+        };
+
+        function initData() {
+            state.league = TEAMS.map(t => ({ ...t, m: 0, w: 0, l: 0, pts: 0, runsFor: 0, oversFor: 0, runsAg: 0, oversAg: 0, form: [] }));
+            // Generate some random players
+            const names = ["Kohli", "Dhoni", "Sharma", "Bumrah", "Rashid", "Butler", "Maxwell", "Pandya", "Jadeja", "Rahul", "Gill", "Iyer"];
+            state.players = names.map((n, i) => ({
+                name: n,
+                team: TEAMS[i % 10].id,
+                runs: 0,
+                wickets: 0,
+                bat: Math.floor(Math.random() * 40 + 50),
+                bowl: Math.floor(Math.random() * 40 + 20),
+                isForeign: i > 8
+            }));
         }
 
-        function startGame() {
-            const name = document.getElementById('user-name').value;
-            if(!name || !gameState.userTeam) return alert("Please enter name and select team");
+        function initGame() {
+            state.mgr = document.getElementById('mgr-input').value;
+            if (!state.mgr || !state.userTeam) return alert("Select team and enter name!");
             
-            gameState.userName = name;
-            document.getElementById('display-user-name').innerText = name;
-            document.getElementById('user-team-name').innerText = gameState.userTeam.name;
-            document.getElementById('user-team-logo').src = gameState.userTeam.logo;
+            document.getElementById('dash-mgr-name').innerText = state.mgr;
+            document.getElementById('dash-team-name').innerText = state.userTeam.name;
+            document.getElementById('dash-logo').src = state.userTeam.logo;
             
-            showScreen('dashboard-screen');
+            showScreen('screen-home');
             document.getElementById('main-nav').style.display = 'flex';
-            updatePointsTable();
-            updateStats();
+            updateLeagueTable();
         }
 
-        function showScreen(screenId, filter) {
+        function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-            document.getElementById(screenId).classList.add('active-screen');
-            
-            if(screenId === 'team-screen') renderSquad();
+            document.getElementById(id).classList.add('active-screen');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(id === 'screen-team') renderSquad();
         }
 
-        function updatePointsTable() {
-            const tbody = document.getElementById('points-table-body');
-            tbody.innerHTML = "";
-            gameState.teams.sort((a,b) => b.pts - a.pts).forEach((team, idx) => {
-                const row = `<tr>
-                    <td>${idx+1}</td>
-                    <td><img src="${team.logo}" class="team-logo-small" style="width:20px"> ${team.id}</td>
-                    <td>${team.m}</td><td>${team.w}</td><td>${team.l}</td>
-                    <td>${team.nrr.toFixed(3)}</td>
-                    <td style="color:var(--gold)">${team.pts}</td>
-                    <td>${team.form.map(f => `<span class="form-dot ${f.toLowerCase()}"></span>`).join('')}</td>
+        function updateLeagueTable() {
+            const body = document.getElementById('table-body');
+            body.innerHTML = "";
+            
+            state.league.sort((a, b) => {
+                if (b.pts !== a.pts) return b.pts - a.pts;
+                const nrrA = (a.runsFor / (a.oversFor || 1)) - (a.runsAg / (a.oversAg || 1));
+                const nrrB = (b.runsFor / (b.oversFor || 1)) - (b.runsAg / (b.oversAg || 1));
+                return nrrB - nrrA;
+            }).forEach((t, i) => {
+                const nrr = (t.runsFor / (t.oversFor || 1)) - (t.runsAg / (t.oversAg || 1));
+                body.innerHTML += `<tr>
+                    <td>${t.id}</td><td>${t.m}</td><td>${t.w}</td><td>${t.l}</td>
+                    <td style="color:${nrr>=0?'#22c55e':'#ef4444'}">${nrr.toFixed(3)}</td>
+                    <td><strong>${t.pts}</strong></td>
+                    <td>${t.form.map(f => `<span class="dot ${f.toLowerCase()}"></span>`).join('')}</td>
                 </tr>`;
-                tbody.innerHTML += row;
+                if(t.id === state.userTeam.id) document.getElementById('league-rank').innerText = `#${i+1}`;
             });
         }
 
-        function updateStats() {
-            const topB = gameState.players.sort((a,b) => b.runs - a.runs)[0];
-            const topW = gameState.players.sort((a,b) => b.wickets - a.wickets)[0];
-            document.getElementById('top-batsman').innerText = `${topB.name} (${topB.runs})`;
-            document.getElementById('top-bowler').innerText = `${topW.name} (${topW.wickets})`;
-        }
-
         function renderSquad() {
-            const container = document.getElementById('squad-list');
-            container.innerHTML = "";
-            gameState.players.filter(p => p.team === gameState.userTeam.id).forEach(p => {
-                container.innerHTML += `
+            const cont = document.getElementById('player-container');
+            cont.innerHTML = "";
+            state.players.filter(p => p.team === state.userTeam.id).forEach(p => {
+                cont.innerHTML += `
                     <div class="player-row">
-                        <div>
-                            ${p.name} ${p.isForeign ? '<span class="foreign-badge">INTL</span>' : ''}
-                            <div class="managed-by">Skills: ${p.bat}/${p.bowl}</div>
-                        </div>
-                        <button class="secondary" style="font-size:0.7rem">BENCH</button>
+                        <div><strong>${p.name}</strong> ${p.isForeign?'<span class="foreign-badge">INTL</span>':''}</div>
+                        <div style="font-size:0.8rem; color:var(--accent)">Skill: ${p.bat}/${p.bowl}</div>
                     </div>
                 `;
             });
         }
 
-        function advanceDay() {
-            gameState.day++;
-            const btn = document.getElementById('next-day-btn');
-            
-            // Logic: Every 2nd day is a match day for the user
-            if(gameState.day % 2 === 0) {
+        function processDay() {
+            state.day++;
+            if (state.day % 3 === 0) {
+                const btn = document.getElementById('day-btn');
                 btn.innerText = "PLAY MATCH";
                 btn.style.background = "#ef4444";
                 btn.onclick = startMatch;
             } else {
-                btn.innerText = "NEXT DAY";
-                btn.style.background = "#22c55e";
-                btn.onclick = advanceDay;
-                alert("Simulating League matches... Day " + gameState.day);
+                alert("Day " + state.day + ": Training completed.");
             }
         }
 
+        // MATCH ENGINE
         function startMatch() {
-            showScreen('match-screen');
-            document.getElementById('batting-controls').style.display = 'block';
-            document.getElementById('commentary-box').innerHTML = "Match Started! You are Batting.";
+            showScreen('screen-match');
+            state.currentMatch = { score: 0, wickets: 0, balls: 0, target: 0, inning: 1 };
+            document.getElementById('bat-controls').style.display = 'block';
+            document.getElementById('m-log').innerHTML = "You are batting first!";
         }
 
-        function playBall(type) {
-            const outcomes = [0, 1, 1, 2, 4, 6, 'W'];
-            const res = outcomes[Math.floor(Math.random() * outcomes.length)];
-            const log = document.getElementById('commentary-box');
+        function playBall(intent) {
+            let risk = 0.1;
+            let reward = 1;
+            if(intent === 'aggressive') { risk = 0.25; reward = 2; }
+            if(intent === 'allout') { risk = 0.45; reward = 3.5; }
+
+            const cm = state.currentMatch;
+            const rand = Math.random();
             
-            let message = "";
-            if(res === 'W') message = `OUT! The batsman tried to play ${type} but missed!`;
-            else message = `The batsman plays it ${type} and gets ${res} runs.`;
-            
-            log.innerHTML = `<div>${message}</div>` + log.innerHTML;
+            if(rand < risk) {
+                cm.wickets++;
+                log("OUT! Batsman dismissed playing " + intent);
+            } else {
+                const runs = [0,1,2,4,6][Math.floor(Math.random() * 5)];
+                cm.score += runs;
+                log(`Runs: ${runs} (${intent} stroke)`);
+            }
+
+            cm.balls++;
+            updateMatchUI();
+
+            if(cm.wickets >= 10 || cm.balls >= 120) endInnings();
         }
 
+        function updateMatchUI() {
+            const cm = state.currentMatch;
+            document.getElementById('m-score').innerText = `${cm.score}/${cm.wickets}`;
+            document.getElementById('m-overs').innerText = `Overs: ${Math.floor(cm.balls/6)}.${cm.balls%6}`;
+        }
+
+        function log(m) {
+            const l = document.getElementById('m-log');
+            l.innerHTML = `<div>${m}</div>` + l.innerHTML;
+        }
+
+        function endInnings() {
+            alert("Innings Over! Total: " + state.currentMatch.score);
+            finishMatchSim();
+        }
+
+        function finishMatchSim() {
+            // Simple logic for opponent response
+            const oppScore = Math.floor(Math.random() * 40 + state.currentMatch.score - 20);
+            const userWon = state.currentMatch.score > oppScore;
+            
+            const uTeam = state.league.find(t => t.id === state.userTeam.id);
+            uTeam.m++;
+            if(userWon) { uTeam.w++; uTeam.pts += 2; uTeam.form.push('W'); }
+            else { uTeam.l++; uTeam.form.push('L'); }
+            
+            // NRR Calculation
+            uTeam.runsFor += state.currentMatch.score;
+            uTeam.oversFor += 20; // Assume 20 for simplicity
+            uTeam.runsAg += oppScore;
+            uTeam.oversAg += 20;
+
+            alert(userWon ? "YOU WON!" : "YOU LOST!");
+            
+            const btn = document.getElementById('day-btn');
+            btn.innerText = "NEXT DAY";
+            btn.style.background = "#22c55e";
+            btn.onclick = processDay;
+            
+            showScreen('screen-home');
+            updateLeagueTable();
+        }
     </script>
 </body>
 </html>
